@@ -29,9 +29,8 @@ interface ContactFormProps {
 export function ContactForm({ isOpen, onClose, onSave, contact }: ContactFormProps) {
   const form = useForm<Omit<Contact, "id">>({
     defaultValues: {
-      name: contact?.name || "",
-      email: contact?.email || "",
-      phone: contact?.phone || "",
+      nome: contact?.nome || "",
+      telefone: contact?.telefone || "",
     },
   });
 
@@ -64,7 +63,7 @@ export function ContactForm({ isOpen, onClose, onSave, contact }: ContactFormPro
           <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
             <FormField
               control={form.control}
-              name="name"
+              name="nome"
               rules={{ required: "Nome é obrigatório" }}
               render={({ field }) => (
                 <FormItem>
@@ -76,10 +75,10 @@ export function ContactForm({ isOpen, onClose, onSave, contact }: ContactFormPro
                 </FormItem>
               )}
             />
-            <FormField
+            {/* <FormField
               control={form.control}
               name="email"
-              rules={{ 
+              rules={{
                 required: "Email é obrigatório",
                 pattern: {
                   value: /^[^\s@]+@[^\s@]+\.[^\s@]+$/,
@@ -95,10 +94,10 @@ export function ContactForm({ isOpen, onClose, onSave, contact }: ContactFormPro
                   <FormMessage />
                 </FormItem>
               )}
-            />
+            /> */}
             <FormField
               control={form.control}
-              name="phone"
+              name="telefone"
               rules={{ required: "Telefone é obrigatório" }}
               render={({ field }) => (
                 <FormItem>
