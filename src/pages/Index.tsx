@@ -1,12 +1,12 @@
 import { useEffect, useState } from "react";
 import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
 import { ContactForm } from "@/components/ContactForm";
 import { ContactCard } from "@/components/ContactCard";
 import { Contact } from "@/types/contact";
 import { Plus, Search } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import { createContact, deleteContact, getAllContacts } from "@/actions/dashboardActions";
-import { Input } from "@/components/ui/input";
 
 const Index = () => {
   const [contacts, setContacts] = useState<Contact[]>([]);
@@ -14,6 +14,10 @@ const Index = () => {
   const [editingContact, setEditingContact] = useState<Contact | undefined>();
   const [searchTerm, setSearchTerm] = useState("");
   const { toast } = useToast();
+
+  const filteredContacts = contacts.filter(contact =>
+    contact.phone.toLowerCase().includes(searchTerm.toLowerCase())
+  );
 
 
 
