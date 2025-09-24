@@ -15,12 +15,6 @@ const Index = () => {
   const [searchTerm, setSearchTerm] = useState("");
   const { toast } = useToast();
 
-  const filteredContacts = contacts.filter(contact =>
-    contact.phone.toLowerCase().includes(searchTerm.toLowerCase())
-  );
-
-
-
   useEffect(() => {
     const fetchContacts = async () => {
       const allContacts = await getAllContacts();
