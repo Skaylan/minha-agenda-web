@@ -1,16 +1,22 @@
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
 import { ContactForm } from "@/components/ContactForm";
 import { ContactCard } from "@/components/ContactCard";
 import { Contact } from "@/types/contact";
-import { Plus } from "lucide-react";
+import { Plus, Search } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 
 const Index = () => {
   const [contacts, setContacts] = useState<Contact[]>([]);
   const [isFormOpen, setIsFormOpen] = useState(false);
   const [editingContact, setEditingContact] = useState<Contact | undefined>();
+  const [searchTerm, setSearchTerm] = useState("");
   const { toast } = useToast();
+
+  const filteredContacts = contacts.filter(contact =>
+    contact.phone.toLowerCase().includes(searchTerm.toLowerCase())
+  );
 
   const handleSaveContact = (contactData: Omit<Contact, "id"> & { id?: string }) => {
     if (contactData.id) {
@@ -68,6 +74,19 @@ const Index = () => {
           </Button>
         </div>
 
+        <div className="mb-6">
+          <div className="relative max-w-md">
+            <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-muted-foreground h-4 w-4" />
+            <Input
+              type="text"
+              placeholder="Pesquisar por telefone..."
+              value={searchTerm}
+              onChange={(e) => setSearchTerm(e.target.value)}
+              className="pl-10"
+            />
+          </div>
+        </div>
+
         {contacts.length === 0 ? (
           <div className="text-center py-12">
             <h2 className="text-xl font-semibold mb-2">Nenhum contato cadastrado</h2>
@@ -79,9 +98,16 @@ const Index = () => {
               Adicionar Primeiro Contato
             </Button>
           </div>
+        ) : filteredContacts.length === 0 ? (
+          <div className="text-center py-12">
+            <h2 className="text-xl font-semibold mb-2">Nenhum contato encontrado</h2>
+            <p className="text-muted-foreground mb-4">
+              Nenhum contato foi encontrado com o telefone pesquisado.
+            </p>
+          </div>
         ) : (
           <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
-            {contacts.map((contact) => (
+            {filteredContacts.map((contact) => (
               <ContactCard
                 key={contact.id}
                 contact={contact}
