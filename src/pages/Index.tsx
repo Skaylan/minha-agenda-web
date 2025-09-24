@@ -87,9 +87,33 @@ const Index = () => {
   };
 
 
-  const filteredContacts = contacts.filter(contact =>
-    contact.telefone.toLowerCase().includes(searchTerm.toLowerCase())
-  );
+  const filteredContacts = contacts.filter(contact => {
+    const searchLower = searchTerm.toLowerCase();
+    const nameInitials = contact.nome.split(' ').map(word => word.charAt(0)).join('').toLowerCase();
+    return contact.telefone.toLowerCase().includes(searchLower) || 
+           contact.nome.toLowerCase().includes(searchLower) ||
+           nameInitials.includes(searchLower);
+  });
+
+  const handleDeleteAllFiltered = async () => {
+    if (filteredContacts.length === 0) return;
+    
+    try {
+      for (const contact of filteredContacts) {
+        await deleteContact(contact.telefone);
+      }
+      setContacts(prev => prev.filter(contact => !filteredContacts.includes(contact)));
+      toast({
+        title: "Contatos removidos",
+        description: `${filteredContacts.length} contatos foram removidos com sucesso.`,
+      });
+    } catch (error) {
+      toast({
+        title: "Erro ao remover contatos",
+        description: "Alguns contatos não puderam ser removidos.",
+      });
+    }
+  };
 
   return (
     <div className="min-h-screen bg-background">
@@ -102,17 +126,31 @@ const Index = () => {
           </Button>
         </div>
 
-        <div className="mb-6">
+        <div className="mb-6 space-y-4">
           <div className="relative max-w-md">
             <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-muted-foreground h-4 w-4" />
             <Input
               type="text"
-              placeholder="Pesquisar por telefone..."
+              placeholder="Pesquisar por telefone, nome ou iniciais..."
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
               className="pl-10"
             />
           </div>
+          {filteredContacts.length > 0 && filteredContacts.length < contacts.length && (
+            <div className="flex justify-between items-center">
+              <span className="text-sm text-muted-foreground">
+                {filteredContacts.length} contatos encontrados
+              </span>
+              <Button 
+                variant="destructive" 
+                size="sm"
+                onClick={handleDeleteAllFiltered}
+              >
+                Deletar Todos Filtrados
+              </Button>
+            </div>
+          )}
         </div>
 
         {contacts.length === 0 ? (
